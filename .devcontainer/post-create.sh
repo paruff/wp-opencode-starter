@@ -6,10 +6,27 @@ set -euo pipefail
 
 echo "🚀 Setting up WP OpenCode Starter devcontainer..."
 
+# Find workspace - devcontainer mounts at /workspaces/<repo-name>
+WORKSPACE="${WORKSPACE:-/workspaces/wp-opencode-starter}"
+if [ ! -d "$WORKSPACE" ]; then
+  WORKSPACE="/workspace"
+fi
+if [ ! -d "$WORKSPACE" ]; then
+  WORKSPACE="$(pwd)"
+fi
+
+cd "$WORKSPACE"
+echo "📁 Working in: $WORKSPACE"
+
 # 1. Install OpenCode
 echo "📦 Installing OpenCode..."
 if ! command -v opencode &> /dev/null; then
-  curl -fsSL https://opencode.ai/install.sh | bash
+  # Try the official install script
+  curl -fsSL https://opencode.ai/install.sh | bash 2>/dev/null || {
+    # Fallback: install via npm
+    echo "Official install failed, trying npm..."
+    npm install -g @opencode/cli
+  }
   export PATH="$HOME/.opencode/bin:$PATH"
   echo 'export PATH="$HOME/.opencode/bin:$PATH"' >> ~/.bashrc
 else
@@ -33,7 +50,6 @@ fi
 
 # 3. Install project dependencies
 echo "📦 Installing Composer dependencies..."
-cd /workspace
 if [ -f "composer.json" ]; then
   composer install --no-interaction --prefer-dist
 else
@@ -42,7 +58,11 @@ fi
 
 echo "📦 Installing npm dependencies..."
 if [ -f "package.json" ]; then
-  npm ci
+  if [ -f "package-lock.json" ]; then
+    npm ci
+  else
+    npm install
+  fi
 else
   echo "No package.json found"
 fi
@@ -64,9 +84,9 @@ fi
 echo "🎯 Verifying OpenCode skills..."
 if command -v opencode &> /dev/null; then
   # Skills are auto-discovered from .agents/skills/
-  if [ -d "/workspace/.agents/skills" ]; then
+  if [ -d "$WORKSPACE/.agents/skills" ]; then
     echo "✅ Skills directory found at .agents/skills/"
-    ls -la /workspace/.agents/skills/
+    ls -la "$WORKSPACE/.agents/skills/"
   else
     echo "⚠️  Skills directory not found"
   fi
@@ -74,22 +94,20 @@ fi
 
 # 6. Verify WPVibe MCP configuration
 echo "🔌 Verifying WPVibe MCP..."
-if [ -f "/workspace/opencode.json" ]; then
+if [ -f "$WORKSPACE/opencode.json" ]; then
   echo "✅ opencode.json found"
-  cat /workspace/opencode.json | jq . 2>/dev/null || cat /workspace/opencode.json
+  cat "$WORKSPACE/opencode.json" | jq . 2>/dev/null || cat "$WORKSPACE/opencode.json"
 else
   echo "⚠️  opencode.json not found"
 fi
 
-# 7. Start Docker services
-echo "🐳 Starting Docker services..."
-cd /workspace
-docker-compose up -d || echo "Docker Compose will start on post-start"
+# 7. Note about Docker services
+echo "🐳 Docker services: Run 'docker-compose up -d' on host to start WordPress + MySQL"
 
 echo "✅ Post-create setup complete!"
 echo ""
 echo "Next steps:"
-echo "  1. Run 'docker-compose up -d' to start WordPress + MySQL"
+echo "  1. Run 'docker-compose up -d' on host to start WordPress + MySQL"
 echo "  2. Open http://localhost:8080 for WordPress"
 echo "  3. Run 'opencode' to start OpenCode session"
 echo "  4. Skills and WPVibe MCP will be auto-discovered"

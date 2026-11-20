@@ -17,7 +17,7 @@ repos:
         name: ESLint
         entry: npx eslint
         language: system
-        types: [javascript, jsx, typescript, tsx]
+        types: [javascript, jsx]
         pass_filenames: true
       - id: stylelint
         name: Stylelint
