@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "wpvibe": {
+      "type": "remote",
+      "url": "https://mcp.wpvibe.ai/mcp",
+      "enabled": true
+    }
+  }
+}

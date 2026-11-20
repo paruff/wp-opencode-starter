@@ -1,0 +1,27 @@
+repos:
+  - repo: local
+    hooks:
+      - id: phpcs
+        name: PHPCS (WordPress)
+        entry: vendor/bin/phpcs
+        language: system
+        types: [php]
+        pass_filenames: true
+      - id: phpstan
+        name: PHPStan
+        entry: vendor/bin/phpstan analyse --no-progress
+        language: system
+        types: [php]
+        pass_filenames: false
+      - id: eslint
+        name: ESLint
+        entry: npx eslint
+        language: system
+        types: [javascript, jsx, typescript, tsx]
+        pass_filenames: true
+      - id: stylelint
+        name: Stylelint
+        entry: npx stylelint
+        language: system
+        types: [css, scss]
+        pass_filenames: true

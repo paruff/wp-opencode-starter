@@ -1,0 +1,4 @@
+{
+  "extends": ["plugin:@wordpress/eslint-plugin/recommended"],
+  "ignorePatterns": ["vendor/", "node_modules/", "wp-content/uploads/"]
+}
