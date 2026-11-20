@@ -1,0 +1,96 @@
+{
+  "name": "WP OpenCode Starter",
+  "description": "WordPress development environment with OpenCode, Superpowers skills, and WPVibe MCP",
+  "image": "mcr.microsoft.com/devcontainers/php:8.2-node-20",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "enableNonRootDocker": "true",
+      "moby": true
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-compose:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "wordpress.vscode-wordpress",
+        "meezilla.phpcs",
+        "bmewburn.vscode-intelephense-client",
+        "stylelint.vscode-stylelint",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
+        "mikestead.dotenv",
+        "ms-azuretools.vscode-docker",
+        "github.vscode-github-actions",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "phpcs.enable": true,
+        "phpcs.standard": "WordPress",
+        "phpcs.executablePath": "${workspaceFolder}/vendor/bin/phpcs",
+        "intelephense.environment.documentRoot": "${workspaceFolder}/wp-content",
+        "intelephense.stubs": [
+          "wordpress",
+          "wordpress-globals",
+          "woocommerce",
+          "acf-pro"
+        ],
+        "editor.formatOnSave": true,
+        "[php]": {
+          "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[css]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "stylelint.enable": true,
+        "eslint.enable": true,
+        "files.associations": {
+          "*.php": "php"
+        }
+      }
+    },
+    "opencode": {
+      "settings": {
+        "mcp": {
+          "wpvibe": {
+            "type": "remote",
+            "url": "https://mcp.wpvibe.ai/mcp",
+            "enabled": true
+          }
+        }
+      }
+    }
+  },
+  "forwardPorts": [8080, 3306],
+  "portsAttributes": {
+    "8080": {
+      "label": "WordPress",
+      "onAutoForward": "notify"
+    },
+    "3306": {
+      "label": "MySQL",
+      "onAutoForward": "ignore"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "COMPOSER_ALLOW_SUPERUSER": "1",
+    "WPVIBE_MCP_URL": "https://mcp.wpvibe.ai/mcp"
+  },
+  "runArgs": [
+    "--cap-add=SYS_RESOURCE",
+    "--security-opt=seccomp=unconfined"
+  ],
+  "mounts": [
+    "source=${localWorkspaceFolder}/wp-content,target=/workspace/wp-content,type=bind,consistency=cached",
+    "source=wp-opencode-starter-db-data,target=/var/lib/mysql,type=volume"
+  ],
+  "volumes": {
+    "wp-opencode-starter-db-data": {}
+  }
+}
