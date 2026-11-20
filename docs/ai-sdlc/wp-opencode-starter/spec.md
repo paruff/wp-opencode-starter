@@ -4,6 +4,16 @@
 
 A minimal, reproducible WordPress development environment with Docker, PHP/JS quality tooling, pre-commit hooks, GitHub Actions CI, OpenCode skills, and WPVibe MCP integration.
 
+## Methodology Context
+
+This spec is the **design draft** in the EGM workflow (`egm-draft` output) and the **design document** for Superpowers' builder check. It implements the **Spec** stage of the AI-Native SDLC Playbook.
+
+- **Superpowers phase**: Post-`brainstorming`, pre-`writing-plans`
+- **EGM phase**: `egm-draft` output, input to `egm-review`
+- **Playbook stage**: Spec (approved design, ready for planning)
+- **Artifact location**: `docs/ai-sdlc/wp-opencode-starter/spec.md`
+- **Review command**: `/egm-review docs/ai-sdlc/wp-opencode-starter/spec.md`
+
 ## Requirements
 
 ### R1: Local Development Environment
@@ -72,3 +82,40 @@ A minimal, reproducible WordPress development environment with Docker, PHP/JS qu
 | AC6 | OpenCode session in repo | Skills discovered, WPVibe MCP connects |
 | AC7 | `composer phpcs` on clean code | Exits 0, no errors |
 | AC8 | `composer phpstan` on clean code | Exits 0, no errors |
+
+---
+
+## Methodology Traceability
+
+Each requirement maps to methodology artifacts:
+
+| Req | Superpowers Skill | EGM Skill | Playbook Principle |
+|-----|-------------------|-----------|-------------------|
+| R1-R3 | `using-git-worktrees` (isolated env) | `egm-draft` (design env) | Reproducible environments |
+| R2, R3 | `test-driven-development` (lint as tests) | `egm-review` (quality gates) | Evidence over claims |
+| R4 | `executing-plans` (hooks as verification) | `egm-lite` (fast feedback) | Small batches |
+| R5 | `subagent-driven-development` (CI per task) | `egm-review` (independent check) | Human-in-the-loop |
+| R6 | `using-superpowers` (skill bootstrap) | N/A (tooling) | AI-native tooling |
+| R7 | `writing-plans` (doc as deliverable) | `egm-draft`/`egm-bootstrap` | Documentation as code |
+
+## Review Focus (EGM Goldfish Review Targets)
+
+When running `/egm-review` on this spec, reviewers should focus on:
+
+1. **Docker service health**: WordPress container must wait for MySQL readiness before accepting connections (R1)
+2. **PHPCS/WPCS version compatibility**: WPCS 3.x requires PHPCS 3.7+, verify composer.json constraints (R2.2)
+3. **PHPStan WordPress extension**: Must load WordPress stubs correctly for accurate analysis (R2.3)
+4. **ESLint/Stylelint config discovery**: Configs must be found from wp-content themes/plugins (R3.2, R3.3)
+5. **pre-commit hook execution**: Must run only on staged files, not entire repo, for speed (R4.2)
+6. **GitHub Actions service containers**: MySQL service must be healthy before WordPress job steps run (R5.4)
+7. **OpenCode skill discovery**: `.agents/skills/` must be in OpenCode's search path (R6.1)
+8. **WPVibe MCP server**: Must start and register tools without manual intervention (R6.2)
+
+## Approval Gate
+
+**Superpowers HARD-GATE**: Nothing gets built until this spec is approved.
+- Short design (this spec) for a project-level change
+- Builder check: dispatch subagent with `builder-check-prompt.md` from brainstorming skill
+- Human approval required before `writing-plans` invocation
+
+**EGM Review Gate**: Run `/egm-review` on this spec. Resolve findings via `/egm-resolve`. Approve before planning.

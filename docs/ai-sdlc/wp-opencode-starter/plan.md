@@ -1,6 +1,10 @@
 # WP OpenCode Starter Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+>
+> **EGM Integration**: This plan is the post-review implementation plan. Run `/egm-drift-report docs/ai-sdlc/wp-opencode-starter/` after implementation to verify code matches spec.
+>
+> **Playbook Stage**: Implement (from approved Spec → Plan)
 
 **Goal:** Establish a complete, documented WordPress development starter environment with Docker, quality tooling, CI, and OpenCode integration.
 
@@ -8,7 +12,7 @@
 
 **Tech Stack:** Docker, WordPress 6.5+, MySQL 8.0, PHP 8.2+, Composer, PHPCS/WPCS, PHPStan, Node 20+, npm, ESLint, Stylelint, pre-commit, GitHub Actions, OpenCode, WPVibe MCP.
 
-**Spec:** `docs/ai-sdlc/wp-opencode-starter/spec.md`
+**Spec:** `docs/ai-sdlc/wp-opencode-starter/spec.md` (approved via `/egm-review`)
 
 ## Global Constraints
 
@@ -41,6 +45,11 @@
 **Interfaces:**
 - Consumes: (none - first task)
 - Produces: Working WordPress + MySQL at localhost:8080
+
+**Methodology Links:**
+- Superpowers: `using-git-worktrees` (isolated env setup)
+- EGM: `egm-lite` (fast environment verification)
+- Playbook: Reproducible environments
 
 - [ ] **Step 1: Verify docker-compose.yml exists and is valid**
 
@@ -92,6 +101,11 @@ git commit -m "chore: verify docker-compose stack"
 - Consumes: Working Docker stack (Task 1)
 - Produces: Passing `composer phpcs` and `composer phpstan`
 
+**Methodology Links:**
+- Superpowers: `test-driven-development` (lint as RED-GREEN tests)
+- EGM: `egm-review` (independent quality check)
+- Playbook: Evidence over claims
+
 - [ ] **Step 1: Verify composer.json has required dependencies**
 
 ```bash
@@ -138,6 +152,11 @@ git commit -m "chore: verify composer PHP tooling"
 **Interfaces:**
 - Consumes: (independent)
 - Produces: Passing `npm run lint:js` and `npm run lint:css`
+
+**Methodology Links:**
+- Superpowers: `test-driven-development` (lint as tests)
+- EGM: `egm-lite` (fast feedback loop)
+- Playbook: Small batches, frequent integration
 
 - [ ] **Step 1: Verify package.json has required dependencies**
 
@@ -186,6 +205,11 @@ git commit -m "chore: verify npm JS/CSS tooling"
 - Consumes: Composer and npm tooling (Tasks 2, 3)
 - Produces: Working pre-commit hooks blocking bad commits
 
+**Methodology Links:**
+- Superpowers: `executing-plans` (hooks as verification steps)
+- EGM: `egm-lite` (fast pre-commit feedback)
+- Playbook: Automated quality gates
+
 - [ ] **Step 1: Verify .pre-commit-config.yaml exists**
 
 ```bash
@@ -228,6 +252,11 @@ git commit -m "chore: verify pre-commit hooks"
 - Consumes: All tooling (Tasks 1-4)
 - Produces: Green CI run on push/PR
 
+**Methodology Links:**
+- Superpowers: `subagent-driven-development` (CI per task), `requesting-code-review` (PR gates)
+- EGM: `egm-review` (independent verification in CI)
+- Playbook: Human-in-the-loop, evidence-based verification
+
 - [ ] **Step 1: Verify CI workflow exists**
 
 ```bash
@@ -269,6 +298,11 @@ git commit -m "chore: verify GitHub Actions CI"
 **Interfaces:**
 - Consumes: (independent)
 - Produces: OpenCode loads skills, WPVibe MCP connects
+
+**Methodology Links:**
+- Superpowers: `using-superpowers` (bootstrap), skills auto-discovery
+- EGM: N/A (tooling integration)
+- Playbook: AI-native development tooling
 
 - [ ] **Step 1: Verify opencode.json registers WPVibe MCP**
 
@@ -319,6 +353,11 @@ git commit -m "chore: verify OpenCode integration"
 - Consumes: All previous tasks
 - Produces: Complete documentation set
 
+**Methodology Links:**
+- Superpowers: `writing-plans` (doc as deliverable), `finishing-a-development-branch` (docs in branch)
+- EGM: `egm-draft` (spec), `egm-bootstrap` (codebase docs)
+- Playbook: Documentation as code, intent-spec-plan traceability
+
 - [ ] **Step 1: Verify README has quick start and quality commands**
 
 ```bash
@@ -331,21 +370,21 @@ Expected: Docker, Composer, npm, pre-commit, OpenCode sections
 ```bash
 cat docs/ai-sdlc/wp-opencode-starter/intent.md
 ```
-Expected: Purpose, why now, audience, success criteria, non-goals, anti-goals
+Expected: Purpose, why now, audience, success criteria, non-goals, anti-goals, methodology alignment
 
 - [ ] **Step 3: Verify spec.md exists and covers all requirements**
 
 ```bash
 cat docs/ai-sdlc/wp-opencode-starter/spec.md
 ```
-Expected: R1-R7, C1-C5, acceptance criteria table
+Expected: R1-R7, C1-C5, acceptance criteria table, methodology traceability, review focus
 
 - [ ] **Step 4: Verify plan.md exists and references spec**
 
 ```bash
 cat docs/ai-sdlc/wp-opencode-starter/plan.md
 ```
-Expected: Header with spec reference, tasks 1-7 with steps
+Expected: Header with spec reference, tasks 1-7 with steps, methodology links per task
 
 - [ ] **Step 5: Commit**
 
@@ -365,6 +404,11 @@ git commit -m "docs: add intent, spec, plan for WP OpenCode Starter"
 **Interfaces:**
 - Consumes: All tasks 1-7
 - Produces: Confirmed working starter environment
+
+**Methodology Links:**
+- Superpowers: `finishing-a-development-branch` (verify, tag, cleanup)
+- EGM: `egm-drift-report` (verify implementation matches spec)
+- Playbook: Ship (verified, tagged release)
 
 - [ ] **Step 1: Clean verification in fresh directory**
 
@@ -400,16 +444,38 @@ git push origin master
 # Check GitHub Actions
 ```
 
-- [ ] **Step 5: Tag release**
+- [ ] **Step 5: EGM Drift Report - verify implementation matches spec**
+
+```bash
+/egm-drift-report docs/ai-sdlc/wp-opencode-starter/
+```
+Expected: No significant drift between spec and implementation
+
+- [ ] **Step 6: Tag release**
 
 ```bash
 git tag -a v1.0.0 -m "WP OpenCode Starter v1.0.0"
 git push origin v1.0.0
 ```
 
-- [ ] **Step 6: Cleanup**
+- [ ] **Step 7: Cleanup**
 
 ```bash
 cd /tmp && rm -rf wp-test
 docker-compose -f /Users/philruff/projects/github/paruff/wp-opencode-starter/docker-compose.yml down -v
 ```
+
+---
+
+## Execution Handoff
+
+After saving and self-reviewing the plan:
+
+**Plan complete and saved to `docs/ai-sdlc/wp-opencode-starter/plan.md`. Please review the plan. Which execution approach would you prefer?**
+
+- **Subagent-driven** - A fresh subagent implements each task and a fresh reviewer checks it before the next one starts, then a whole-branch review at the end. Most thorough; costs a fresh context per task and per review. Uses `superpowers:subagent-driven-development`.
+- **Native** - I implement every task myself in this session, the way this harness runs work, then one fresh reviewer on the most capable model checks the whole branch. Cheapest and fastest; no independent review until the end. Uses `superpowers:executing-plans`.
+
+**For this plan I recommend Subagent-driven**, because the tasks have clear independent interfaces (each produces a verified deliverable) and the final drift report benefits from fresh context.
+
+**Does the plan capture what you want, and which approach should we use?**
